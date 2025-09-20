@@ -1,0 +1,14 @@
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\bin\Debug\net9.0\Gestor_contactos.exe
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\bin\Debug\net9.0\Gestor_contactos.deps.json
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\bin\Debug\net9.0\Gestor_contactos.runtimeconfig.json
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\bin\Debug\net9.0\Gestor_contactos.dll
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\bin\Debug\net9.0\Gestor_contactos.pdb
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\Gestor_contactos.GeneratedMSBuildEditorConfig.editorconfig
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\Gestor_contactos.AssemblyInfoInputs.cache
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\Gestor_contactos.AssemblyInfo.cs
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\Gestor_contactos.csproj.CoreCompileInputs.cache
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\Gestor_contactos.dll
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\refint\Gestor_contactos.dll
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\Gestor_contactos.pdb
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\Gestor_contactos.genruntimeconfig.cache
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\ref\Gestor_contactos.dll
