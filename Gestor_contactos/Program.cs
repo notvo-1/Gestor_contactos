@@ -15,11 +15,12 @@ namespace Gestor_contactos
                 Console.WriteLine("1. Agregar contacto");
                 Console.WriteLine("2. Listar contactos");
                 Console.WriteLine("3. Salir");
+                Console.WriteLine("4. Instancia de Prueba");
                 Console.Write("Elige una opción: ");
 
                 string opcion = Console.ReadLine() ?? "";
 
-                switch(opcion)
+                switch (opcion)
                 {
                     case "1":
                         AgregarContacto();
@@ -29,6 +30,9 @@ namespace Gestor_contactos
                         break;
                     case "3":
                         continuar = false;
+                        break;
+                    case "4":
+                        InstanciaPrueba();
                         break;
                     default:
                         Console.WriteLine("Opción inválida.");
@@ -50,7 +54,10 @@ namespace Gestor_contactos
             Console.Write("Teléfono: ");
             string telefono = Console.ReadLine() ?? "";
 
-            contactos.Add(new Contacto { Nombre = nombre, Telefono = telefono });
+            Console.Write("Email: ");
+            string email = Console.ReadLine() ?? "";
+
+            contactos.Add(new Contacto { Nombre = nombre, Telefono = telefono, Email = email });
 
             Console.WriteLine("Contacto agregado.");
         }
@@ -66,9 +73,19 @@ namespace Gestor_contactos
             {
                 foreach (var c in contactos)
                 {
-                    Console.WriteLine($"Nombre: {c.Nombre}, Teléfono: {c.Telefono}");
+                    Console.WriteLine($"Nombre: {c.Nombre}, Teléfono: {c.Telefono}, Email: {c.Email}");
                 }
             }
+        }
+
+        static void InstanciaPrueba()
+        {
+            Contacto c1 = new Contacto();
+            c1.Nombre = "Matias";
+            c1.Telefono = "1234";
+            c1.Email = "m@gmail.com";
+
+            Console.WriteLine($"Nombre: {c1.Nombre}, Telefono: {c1.Telefono}, Email: {c1.Email}");
         }
     }
 
@@ -76,5 +93,6 @@ namespace Gestor_contactos
     {
         public string Nombre { get; set; } = "";
         public string Telefono { get; set; } = "";
+        public string Email { get; set; } = "";
     }
 }

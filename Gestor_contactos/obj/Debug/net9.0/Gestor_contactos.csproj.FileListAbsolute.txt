@@ -12,3 +12,4 @@ D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\ref
 D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\Gestor_contactos.pdb
 D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\Gestor_contactos.genruntimeconfig.cache
 D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\ref\Gestor_contactos.dll
+D:\salvar\Documentos\code\Gestor_contactos\Gestor_contactos\obj\Debug\net9.0\Gestor_contactos.sourcelink.json
