@@ -1,5 +1,6 @@
 ﻿
 using System.Runtime.InteropServices;
+using Microsoft.VisualBasic;
 
 namespace Gestor_contactos
 {
@@ -7,8 +8,6 @@ namespace Gestor_contactos
     {
         static List<Contacto> contactos = new List<Contacto>();
         const string archivoDB = "D:\\salvar\\Documentos\\code\\Gestor_contactos\\contactos.txt";
-        static bool viewActualizado = false;
-        static bool contactoGuardado = false;
         static void Main(string[] args)
         {
             bool continuar = true;
@@ -20,7 +19,7 @@ namespace Gestor_contactos
                 Console.WriteLine("1. Agregar contacto");
                 Console.WriteLine("2. Listar contactos");
                 Console.WriteLine("3. Instancia de Prueba");
-                Console.WriteLine("4.");//pendiente para nuevas opciones
+                Console.WriteLine("4. Buscar Contacto");
                 Console.WriteLine("5.");//pendiente para nuevas opciones
                 Console.WriteLine("6. Salir");
                 Console.Write("Elige una opción: ");
@@ -39,11 +38,12 @@ namespace Gestor_contactos
                         InstanciaPrueba();
                         break;
                     case "4":
+                        BuscarContacto();
                         break;
                     case "5":
                         break;
                     case "6":
-                        continuar = CheckGuardado();
+                        continuar = false;
                         break;
                     default:
                         Console.WriteLine("Opción inválida.");
@@ -70,9 +70,8 @@ namespace Gestor_contactos
 
             contactos.Add(new Contacto { Nombre = nombre, Telefono = telefono, Email = email });
 
+            GuardarContactos();
             Console.WriteLine("Contacto agregado.");
-
-            Program.contactoGuardado = false;
         }
 
         static void ListarContactos()
@@ -106,7 +105,7 @@ namespace Gestor_contactos
         {
             int archivoTamaño = File.ReadAllLines(archivoDB).Length;
             int contactosTamaño = Program.contactos.Count;
-            if (archivoTamaño != contactosTamaño && Program.viewActualizado)
+            if (archivoTamaño != contactosTamaño)
             {
                 var lineas = new List<string>();
                 foreach (var contacto in contactos)
@@ -116,9 +115,6 @@ namespace Gestor_contactos
                 //sobre escribo todo el txt ahora
                 File.WriteAllLines(archivoDB, lineas);
                 Console.WriteLine($"✅ {contactos.Count} contactos guardados correctamente.");
-                Program.contactoGuardado = true;
-                Program.viewActualizado = false;
-
             }
             else
             {
@@ -126,18 +122,10 @@ namespace Gestor_contactos
             }
         }
 
-        static bool CheckGuardado()
-        {
-            if (!contactoGuardado)
-            {
-                GuardarContactos();
-                return false;
-            }
-            return true;
-        }
+
         static void CargarContactos()
         {
-            if (File.Exists(archivoDB) && !Program.viewActualizado)
+            if (File.Exists(archivoDB))
             {
                 string[] lineas = File.ReadAllLines(archivoDB);
 
@@ -158,19 +146,33 @@ namespace Gestor_contactos
                         }
                     }
                 }
-                if (lineas.Length == contactos.Count)
-                {
-                    Program.viewActualizado = true; //quenteligente
-                }
-                else
-                {
-                    System.Console.WriteLine("Algo salio mal en la carga del DB. Lo arreglo despues xD");
-                }
+
             }
             else
             {
                 System.Console.WriteLine("No se puede acceder al DB.");
             }
+        }
+
+        static void BuscarContacto()
+        {
+            string busqueda;
+            System.Console.WriteLine("Ingrese el valor a buscar: ");
+            busqueda = Console.ReadLine() ?? "-NULL-";
+            var resultado = contactos.Where(c => c.Nombre.Contains(busqueda, StringComparison.OrdinalIgnoreCase) || c.Telefono.Contains(busqueda, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (resultado.Any())
+            {
+                foreach (var i in resultado)
+                {
+                    Console.WriteLine($"Nombre: {i.Nombre}, Teléfono: {i.Telefono}, Email: {i.Email}");
+                }
+
+            }
+            else
+            {
+                System.Console.WriteLine("No se encontraron coincidencias.");
+            }
+            
         }
     }
 
