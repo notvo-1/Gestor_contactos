@@ -1,5 +1,6 @@
 ﻿
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.VisualBasic;
 
 namespace Gestor_contactos
@@ -7,7 +8,7 @@ namespace Gestor_contactos
     class Program
     {
         static List<Contacto> contactos = new List<Contacto>();
-        const string archivoDB = "D:\\salvar\\Documentos\\code\\Gestor_contactos\\contactos.txt";
+        const string archivoDB = "contactos.txt";
         static void Main(string[] args)
         {
             bool continuar = true;
@@ -20,7 +21,7 @@ namespace Gestor_contactos
                 Console.WriteLine("2. Listar contactos");
                 Console.WriteLine("3. Instancia de Prueba");
                 Console.WriteLine("4. Buscar Contacto");
-                Console.WriteLine("5.");//pendiente para nuevas opciones
+                Console.WriteLine("5. Elminar Contacto");//pendiente para nuevas opciones
                 Console.WriteLine("6. Salir");
                 Console.Write("Elige una opción: ");
 
@@ -41,6 +42,7 @@ namespace Gestor_contactos
                         BuscarContacto();
                         break;
                     case "5":
+                        EliminarContacto();
                         break;
                     case "6":
                         continuar = false;
@@ -157,8 +159,13 @@ namespace Gestor_contactos
         static void BuscarContacto()
         {
             string busqueda;
-            System.Console.WriteLine("Ingrese el valor a buscar: ");
-            busqueda = Console.ReadLine() ?? "-NULL-";
+            System.Console.WriteLine("Ingrese el nombre o número del contacto a buscar: ");
+            busqueda = Console.ReadLine() ?? "";
+            if (string.IsNullOrWhiteSpace(busqueda))
+            {
+                System.Console.WriteLine("❌ Debe ingresar un nombre o número validos.");
+                return;
+            }
             var resultado = contactos.Where(c => c.Nombre.Contains(busqueda, StringComparison.OrdinalIgnoreCase) || c.Telefono.Contains(busqueda, StringComparison.OrdinalIgnoreCase)).ToList();
             if (resultado.Any())
             {
@@ -172,7 +179,91 @@ namespace Gestor_contactos
             {
                 System.Console.WriteLine("No se encontraron coincidencias.");
             }
-            
+
+        }
+
+        static void EliminarContacto()
+        {
+            System.Console.WriteLine("Quiere hacer una eliminacion multiple? S/N");
+            string opcion = Console.ReadLine() ?? "";
+
+            if (opcion.ToLower() == "s")
+            {
+                System.Console.WriteLine("Ingrese el nombre o número del contacto a eliminar: ");
+                string busqueda = Console.ReadLine() ?? "";
+                if (string.IsNullOrWhiteSpace(busqueda))
+                {
+                    System.Console.WriteLine("❌ Debe ingresar un nombre o número validos.");
+                    return;
+                }
+                var resultado = contactos.Where(c => c.Nombre.Contains(busqueda, StringComparison.OrdinalIgnoreCase) || c.Telefono.Contains(busqueda, StringComparison.OrdinalIgnoreCase)).ToList();
+                if (resultado.Any())
+                {
+                    System.Console.WriteLine("Los resultados que coinciden con la busqueda son: ");
+                    foreach (var i in resultado)
+                    {
+                        Console.WriteLine($"Nombre: {i.Nombre}, Teléfono: {i.Telefono}, Email: {i.Email}");
+                    }
+                    System.Console.WriteLine($"Desea eliminar los {resultado.Count()} registros? S/N");
+                    opcion = Console.ReadLine() ?? "".ToLower();
+
+                    if (opcion.ToLower() == "s")
+                    {
+                        contactos.RemoveAll(c => c.Nombre.Contains(busqueda, StringComparison.OrdinalIgnoreCase) || c.Telefono.Contains(busqueda, StringComparison.OrdinalIgnoreCase));
+
+                        System.Console.WriteLine($"✅ {resultado.Count()} contactos fueron eliminados.");
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    System.Console.WriteLine($"No se encontraron coincidencias para {busqueda}");
+                }
+            }
+            else if (opcion == "n")
+            {
+                System.Console.WriteLine("Ingrese el nombre o número del contacto a eliminar: ");
+                string busqueda = Console.ReadLine() ?? "";
+                if (string.IsNullOrWhiteSpace(busqueda))
+                {
+                    System.Console.WriteLine("❌ Debe ingresar un nombre o número validos.");
+                    return;
+                }
+                var resultado = contactos.Where(c => c.Nombre.Contains(busqueda, StringComparison.OrdinalIgnoreCase) || c.Telefono.Contains(busqueda, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                if (resultado.Any())
+                {
+                    var contacto = resultado.FirstOrDefault();
+                    Console.WriteLine($"Nombre: {contacto?.Nombre}, Teléfono: {contacto?.Telefono}, Email: {contacto?.Email}");
+
+                    System.Console.WriteLine("Desea eliminar el contacto? S/N");
+                    opcion = Console.ReadLine() ?? "".ToLower();
+
+                    if (opcion == "s" && contacto != null)
+                    {
+                        contactos.Remove(contacto);
+                        System.Console.WriteLine($"✅ Contacto {contacto.Nombre} eliminado.");
+                        GuardarContactos();
+
+                    }
+                    else
+                    {
+                        System.Console.WriteLine("❌ No se puede eliminar. Intente nuevamente.");
+                    }
+
+                }
+            }
+            else
+            {
+                return;
+            }
+
+
+
+
         }
     }
 
