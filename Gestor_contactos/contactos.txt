@@ -1,5 +1,3 @@
-Jacqueline;2343423234;jacqui@gmail.com
-Pixie Orellana;23423423;reina@detodo.com
-Dulkan;332;michibebe@gmail.com
-Matias;999;matias@gmail.com
-Mori;3333333333333333;culogordo@gatitonet.com
+Mationa;2312312;maitas@gmail.com;26/9/2025 21:17:02
+Jacqui;45444444;tom@tomate.com;26/9/2025 21:17:39
+Pixie;999999;lareina@maxima.com;26/9/2025 21:19:43

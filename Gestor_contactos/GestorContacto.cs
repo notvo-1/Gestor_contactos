@@ -2,9 +2,9 @@
 
 public class GestorContacto
 {
-    static List<Contacto> contactos = new List<Contacto>();
+    private List<Contacto> contactos = new List<Contacto>();
     const string archivoDB = "contactos.txt";
-    public static void AgregarContacto()
+    public void AgregarContacto()
     {
         Console.Write("Nombre: ");
         string nombre = Console.ReadLine() ?? "";
@@ -15,13 +15,13 @@ public class GestorContacto
         Console.Write("Email: ");
         string email = Console.ReadLine() ?? "";
 
-        contactos.Add(new Contacto { Nombre = nombre, Telefono = telefono, Email = email });
+        contactos.Add(new Contacto { Nombre = nombre, Telefono = telefono, Email = email, FechaCreacion = DateTime.Now });
 
         GuardarContactos();
         Console.WriteLine("Contacto agregado.");
     }
 
-    public static void ModificarContacto()
+    public void ModificarContacto()
     {
         string busqueda = ValidarString("Ingrese el nombre del contacto a buscar.");
         var resultado = Buscar(busqueda);
@@ -94,7 +94,7 @@ public class GestorContacto
         }
     }
 
-    static int ValidarInt(string mensaje)
+    private int ValidarInt(string mensaje)
     {
         do
         {
@@ -108,12 +108,12 @@ public class GestorContacto
         } while (true);
     }
 
-    static bool ValidarIndice(int indice, int max)
+    private bool ValidarIndice(int indice, int max)
     {
         return indice >= 1 && indice <= max;
     }
 
-    static string ValidarString(string mensaje)
+    private string ValidarString(string mensaje)
     {
         do
         {
@@ -134,7 +134,7 @@ public class GestorContacto
     }
 
 
-    public static void ListarContactos()
+    public void ListarContactos()
     {
         Console.WriteLine("=== Lista de Contactos ===");
         if (contactos.Count == 0)
@@ -146,29 +146,19 @@ public class GestorContacto
             foreach (var contacto in contactos)
             {
                 //aca pasa lo mismo, estoy iterando en la lista de objetos de la clase contacto por ende todo lo que itero son objetos y puedo acceder a sus atributos y metodos.
-                Console.WriteLine($"Nombre: {contacto.Nombre}, Teléfono: {contacto.Telefono}, Email: {contacto.Email}");
+                Console.WriteLine($"Nombre: {contacto.Nombre}, Teléfono: {contacto.Telefono}, Email: {contacto.Email}, Fecha Creacion: {contacto.FechaCreacion}");
             }
         }
     }
 
-    static void InstanciaPrueba()
-    {
-        Contacto c1 = new Contacto();
-        c1.Nombre = "Matias";
-        c1.Telefono = "1234";
-        c1.Email = "m@gmail.com";
-
-        Console.WriteLine($"Nombre: {c1.Nombre}, Telefono: {c1.Telefono}, Email: {c1.Email}");
-    }
-
-    static void GuardarContactos()
+    private void GuardarContactos()
     {
         if (contactos.Count() > 0)
         {
             var lineas = new List<string>();
             foreach (var contacto in contactos)
             {
-                lineas.Add($"{contacto.Nombre};{contacto.Telefono};{contacto.Email}"); //claro puedo acceder directamenta al atributo o propiedad porque contactos es una lista de objetos de tipo Contacto. Es decir que en cada iteracion estoy tomando un objeto de tipo contacto ya instancidao (por eso objeto...) entonces puedo acceder a sus metodos y atributos (propiedades)
+                lineas.Add($"{contacto.Nombre};{contacto.Telefono};{contacto.Email};{contacto.FechaCreacion}");
             }
             //sobre escribo todo el txt ahora
             File.WriteAllLines(archivoDB, lineas);
@@ -177,7 +167,7 @@ public class GestorContacto
     }
 
 
-    public static void CargarContactos()
+    public void CargarContactos()
     {
         if (File.Exists(archivoDB))
         {
@@ -189,14 +179,12 @@ public class GestorContacto
                 {
                     string[] datos = linea.Split(";");
 
-                    if (datos.Length >= 3)
+                    if (datos.Length >= 4)
                     {
-                        contactos.Add(new Contacto
-                        {
-                            Nombre = datos[0],
-                            Telefono = datos[1],
-                            Email = datos[2]
-                        });
+                        DateTime fechaGuardada = DateTime.TryParse(datos[3], out DateTime x) ? x : DateTime.Now ;
+                        var contacto = new Contacto { Nombre = datos[0], Telefono = datos[1], Email = datos[2] , FechaCreacion = fechaGuardada};
+                       
+                        contactos.Add(contacto);
                     }
                 }
             }
@@ -208,7 +196,7 @@ public class GestorContacto
         }
     }
 
-    public static void BuscarContacto()
+    public void BuscarContacto()
     {
         string busqueda;
         System.Console.WriteLine("Ingrese el nombre o número del contacto a buscar: ");
@@ -234,13 +222,13 @@ public class GestorContacto
 
     }
 
-    static List<Contacto> Buscar(string valorBuscado)
+    private List<Contacto> Buscar(string valorBuscado)
     {
         var resultado = contactos.Where(c => c.Nombre.Contains(valorBuscado, StringComparison.OrdinalIgnoreCase) || c.Telefono.Contains(valorBuscado, StringComparison.OrdinalIgnoreCase)).ToList();
         return resultado;
     }
 
-    public static void EliminarContacto()
+    public void EliminarContacto()
     {
         string busqueda = ValidarString("Ingrese el nombre o número del contacto a eliminar");
         var resultado = Buscar(busqueda);

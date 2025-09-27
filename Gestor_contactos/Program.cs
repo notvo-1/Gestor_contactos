@@ -10,8 +10,9 @@ namespace Gestor_contactos
 
         static void Main(string[] args)
         {
+            GestorContacto gestor = new GestorContacto();
             bool continuar = true;
-            GestorContacto.CargarContactos();
+            gestor.CargarContactos();
             while (continuar)
             {
                 Console.Clear();
@@ -29,19 +30,19 @@ namespace Gestor_contactos
                 switch (opcion)
                 {
                     case "1":
-                        GestorContacto.AgregarContacto();
+                        gestor.AgregarContacto();
                         break;
                     case "2":
-                        GestorContacto.ListarContactos();
+                        gestor.ListarContactos();
                         break;
                     case "3":
-                        GestorContacto.ModificarContacto();
+                        gestor.ModificarContacto();
                         break;
                     case "4":
-                        GestorContacto.BuscarContacto();
+                        gestor.BuscarContacto();
                         break;
                     case "5":
-                        GestorContacto.EliminarContacto();
+                        gestor.EliminarContacto();
                         break;
                     case "6":
                         continuar = false;
