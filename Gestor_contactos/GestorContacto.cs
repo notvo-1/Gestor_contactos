@@ -3,7 +3,7 @@
 public class GestorContacto
 {
     private List<Contacto> contactos = new List<Contacto>();
-    const string archivoDB = "contactos.txt";
+    RepositorioContacto connect = new RepositorioContacto();
     public void AgregarContacto()
     {
         Console.Write("Nombre: ");
@@ -17,7 +17,7 @@ public class GestorContacto
 
         contactos.Add(new Contacto { Nombre = nombre, Telefono = telefono, Email = email, FechaCreacion = DateTime.Now });
 
-        GuardarContactos();
+        connect.GuardarContactos(contactos);
         Console.WriteLine("Contacto agregado.");
     }
 
@@ -71,7 +71,7 @@ public class GestorContacto
                     System.Console.WriteLine("Datos modificados con exito!");
                     System.Console.WriteLine("El contacto ha quedado asi: ");
                     Console.WriteLine($"Nombre: {c.Nombre}, Teléfono: {c.Telefono}, Email: {c.Email}");
-                    GuardarContactos();
+                    connect.GuardarContactos(contactos);
                 }
                 else if (opcion == "n")
                 {
@@ -145,55 +145,15 @@ public class GestorContacto
         {
             foreach (var contacto in contactos)
             {
-                //aca pasa lo mismo, estoy iterando en la lista de objetos de la clase contacto por ende todo lo que itero son objetos y puedo acceder a sus atributos y metodos.
                 Console.WriteLine($"Nombre: {contacto.Nombre}, Teléfono: {contacto.Telefono}, Email: {contacto.Email}, Fecha Creacion: {contacto.FechaCreacion}");
             }
-        }
-    }
-
-    private void GuardarContactos()
-    {
-        if (contactos.Count() > 0)
-        {
-            var lineas = new List<string>();
-            foreach (var contacto in contactos)
-            {
-                lineas.Add($"{contacto.Nombre};{contacto.Telefono};{contacto.Email};{contacto.FechaCreacion}");
-            }
-            //sobre escribo todo el txt ahora
-            File.WriteAllLines(archivoDB, lineas);
-            Console.WriteLine($"✅ {contactos.Count} contactos guardados correctamente.");
         }
     }
 
 
     public void CargarContactos()
     {
-        if (File.Exists(archivoDB))
-        {
-            string[] lineas = File.ReadAllLines(archivoDB);
-
-            foreach (var linea in lineas)
-            {
-                if (!string.IsNullOrWhiteSpace(linea))
-                {
-                    string[] datos = linea.Split(";");
-
-                    if (datos.Length >= 4)
-                    {
-                        DateTime fechaGuardada = DateTime.TryParse(datos[3], out DateTime x) ? x : DateTime.Now ;
-                        var contacto = new Contacto { Nombre = datos[0], Telefono = datos[1], Email = datos[2] , FechaCreacion = fechaGuardada};
-                       
-                        contactos.Add(contacto);
-                    }
-                }
-            }
-
-        }
-        else
-        {
-            System.Console.WriteLine("No se puede acceder al DB.");
-        }
+        connect.CargarContactos(contactos);
     }
 
     public void BuscarContacto()
@@ -259,7 +219,7 @@ public class GestorContacto
                 {
                     contactos.Remove(primerContacto);
                     System.Console.WriteLine($"✅ Contacto {primerContacto.Nombre} eliminado!");
-                    GuardarContactos();
+                    connect.GuardarContactos(contactos);
                 }
             }
             else if (opcion == "2")
@@ -270,7 +230,7 @@ public class GestorContacto
                 {
                     contactos.RemoveAll(c => c.Nombre.Contains(busqueda, StringComparison.OrdinalIgnoreCase) || c.Telefono.Contains(busqueda, StringComparison.OrdinalIgnoreCase));
                     System.Console.WriteLine($"✅ {resultado.Count()} contactos fueron eliminados.");
-                    GuardarContactos();
+                    connect.GuardarContactos(contactos);
                 }
             }
             else

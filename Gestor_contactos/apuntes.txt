@@ -1,0 +1,30 @@
+Te marco algunas observaciones rápidas para que vayas puliendo:
+
+Acoplamiento actual
+
+GestorContacto crea adentro su propio RepositorioContacto (connect = new RepositorioContacto();).
+
+Mejor: pasárselo como dependencia desde Program o InterfazConsola. Así lo podés reemplazar en el futuro por otro repositorio (ej: uno con base de datos).
+→ Esto se llama inyección de dependencias (aunque sea manual).
+
+Validaciones repetidas
+
+Estás repitiendo bastante lógica de confirmaciones (S/N) y de búsqueda.
+
+Te conviene centralizar esas validaciones en métodos auxiliares (una mini clase Validador o helpers estáticos).
+
+GuardarContactos en cada operación
+
+Ahora mismo cada vez que agregás, modificás o eliminás se guarda todo el archivo de nuevo.
+
+Para este ejercicio está perfecto, pero más adelante vas a querer optimizar:
+
+Guardar solo cambios puntuales.
+
+O cargar en memoria y recién escribir cuando el usuario elija "Guardar cambios".
+
+Formato de datos
+
+Estás guardando FechaCreacion como string con ToString(). En la práctica, puede romperse si cambiás configuración regional.
+
+Mejor: ToString("o") (ISO 8601) → 2025-09-21T13:45:30.0000000Z. Y al leer, usar DateTime.ParseExact.
