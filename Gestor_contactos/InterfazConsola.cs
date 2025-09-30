@@ -2,9 +2,14 @@
 
 public class InterfazConsola
 {
+    GestorContacto gestor;
+    public InterfazConsola(GestorContacto gestor)
+    {
+        this.gestor = gestor;
+    }
     public void Menu()
     {
-        GestorContacto gestor = new GestorContacto();
+
         bool continuar = true;
         gestor.CargarContactos();
         while (continuar)

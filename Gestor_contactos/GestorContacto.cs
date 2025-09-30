@@ -3,7 +3,10 @@
 public class GestorContacto
 {
     private List<Contacto> contactos = new List<Contacto>();
-    RepositorioContacto connect = new RepositorioContacto();
+    private RepositorioContacto connect;
+    public GestorContacto(RepositorioContacto connect) {
+        this.connect = connect;
+    }
     public void AgregarContacto()
     {
         Console.Write("Nombre: ");
@@ -23,7 +26,7 @@ public class GestorContacto
 
     public void ModificarContacto()
     {
-        string busqueda = ValidarString("Ingrese el nombre del contacto a buscar.");
+        string busqueda = Validador.ValidarString("Ingrese el nombre del contacto a buscar.");
         var resultado = Buscar(busqueda);
 
         if (resultado.Any())
@@ -39,8 +42,8 @@ public class GestorContacto
                 contactosPorModificar.Add(contacto);
             }
 
-            indice = ValidarInt("Elija el contacto a modificar seleccionando por su indice");
-            if (ValidarIndice(indice, resultado.Count()))
+            indice = Validador.ValidarInt("Elija el contacto a modificar seleccionando por su indice");
+            if (Validador.ValidarIndice(indice, resultado.Count()))
             {
                 var c = contactosPorModificar[indice - 1];
                 Console.WriteLine($"Nombre: {c.Nombre}, Teléfono: {c.Telefono}, Email: {c.Email}");
@@ -92,48 +95,7 @@ public class GestorContacto
             System.Console.WriteLine("❌ No se encontro ninguna coincidencia.");
             return;
         }
-    }
-
-    private int ValidarInt(string mensaje)
-    {
-        do
-        {
-            Console.Write(mensaje + " :");
-
-            if (int.TryParse(Console.ReadLine(), out int num))
-            {
-                return num;
-            }
-
-        } while (true);
-    }
-
-    private bool ValidarIndice(int indice, int max)
-    {
-        return indice >= 1 && indice <= max;
-    }
-
-    private string ValidarString(string mensaje)
-    {
-        do
-        {
-            System.Console.WriteLine(mensaje + " :");
-            string busqueda = Console.ReadLine() ?? "";
-            if (string.IsNullOrWhiteSpace(busqueda))
-            {
-                System.Console.WriteLine("❌ Debe ingresar un nombre o número validos.");
-
-            }
-            else
-            {
-                return busqueda;
-            }
-
-        } while (true);
-
-    }
-
-
+   }
     public void ListarContactos()
     {
         Console.WriteLine("=== Lista de Contactos ===");
@@ -190,7 +152,7 @@ public class GestorContacto
 
     public void EliminarContacto()
     {
-        string busqueda = ValidarString("Ingrese el nombre o número del contacto a eliminar");
+        string busqueda = Validador.ValidarString("Ingrese el nombre o número del contacto a eliminar");
         var resultado = Buscar(busqueda);
 
         if (resultado.Any())

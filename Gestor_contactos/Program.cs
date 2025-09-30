@@ -7,7 +7,9 @@ namespace Gestor_contactos
 
         static void Main(string[] args)
         {
-            InterfazConsola menu = new InterfazConsola();
+            RepositorioContacto repositorio = new RepositorioContacto();
+            GestorContacto gestor = new GestorContacto(repositorio);
+            InterfazConsola menu = new InterfazConsola(gestor);
             menu.Menu();
         }
     }
