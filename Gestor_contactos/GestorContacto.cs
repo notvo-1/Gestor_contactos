@@ -4,7 +4,8 @@ public class GestorContacto
 {
     private List<Contacto> contactos = new List<Contacto>();
     private RepositorioContacto connect;
-    public GestorContacto(RepositorioContacto connect) {
+    public GestorContacto(RepositorioContacto connect)
+    {
         this.connect = connect;
     }
     public void AgregarContacto()
@@ -52,24 +53,10 @@ public class GestorContacto
 
                 if (opcion == "s")
                 {
-                    System.Console.WriteLine("Ingrese un NOMBRE NUEVO. Si no ingresa nada, se conserva el valor anterior.");
-                    string nuevoNombre = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(nuevoNombre))
-                    {
-                        c.Nombre = nuevoNombre;
-                    }
-                    System.Console.WriteLine("Ingrese un TELEFONO NUEVO. Si no ingresa nada, se conserva el valor anterior.");
-                    string nuevoTelefono = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(nuevoTelefono))
-                    {
-                        c.Telefono = nuevoTelefono;
-                    }
-                    System.Console.WriteLine("Ingrese un EMAIL NUEVO. Si no ingresa nada, se conserva el valor anterior.");
-                    string nuevoEmail = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(nuevoEmail))
-                    {
-                        c.Email = nuevoEmail;
-                    }
+                    c.Nombre = Validador.ValidarCambio("Ingrese un NOMBRE NUEVO. Si no ingresa nada, se conserva el valor anterior.", c.Nombre);
+
+                    c.Telefono = Validador.ValidarCambio("Ingrese un TELEFONO NUEVO. Si no ingresa nada, se conserva el valor anterior.", c.Telefono);
+                    c.Email = Validador.ValidarCambio("Ingrese un EMAIL NUEVO. Si no ingresa nada, se conserva el valor anterior.", c.Email);
 
                     System.Console.WriteLine("Datos modificados con exito!");
                     System.Console.WriteLine("El contacto ha quedado asi: ");
@@ -95,7 +82,7 @@ public class GestorContacto
             System.Console.WriteLine("❌ No se encontro ninguna coincidencia.");
             return;
         }
-   }
+    }
     public void ListarContactos()
     {
         Console.WriteLine("=== Lista de Contactos ===");
@@ -115,7 +102,22 @@ public class GestorContacto
 
     public void CargarContactos()
     {
-        connect.CargarContactos(contactos);
+        string[] lineas = connect.CargarContactos();
+        foreach (var linea in lineas)
+        {
+            if (!string.IsNullOrWhiteSpace(linea))
+            {
+                string[] datos = linea.Split(";");
+
+                if (datos.Length >= 4)
+                {
+                    DateTime fechaGuardada = DateTime.TryParse(datos[3], out DateTime x) ? x : DateTime.Now;
+                    var contacto = new Contacto { Nombre = datos[0], Telefono = datos[1], Email = datos[2], FechaCreacion = fechaGuardada };
+
+                    contactos.Add(contacto);
+                }
+            }
+        }
     }
 
     public void BuscarContacto()

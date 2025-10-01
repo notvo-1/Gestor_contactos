@@ -8,45 +8,41 @@ public class RepositorioContacto
 
     public void GuardarContactos(List<Contacto> contactos)
     {
-        if (contactos.Count() > 0)
+        try
         {
-            var lineas = new List<string>();
-            foreach (var contacto in contactos)
+            if (contactos.Count() > 0)
             {
-                lineas.Add($"{contacto.Nombre};{contacto.Telefono};{contacto.Email};{contacto.FechaCreacion}");
+                var lineas = new List<string>();
+                foreach (var contacto in contactos)
+                {
+                    lineas.Add($"{contacto.Nombre};{contacto.Telefono};{contacto.Email};{contacto.FechaCreacion}");
+                }
+                //sobre escribo todo el txt ahora
+                File.WriteAllLines(archivoDB, lineas);
+                Console.WriteLine($"✅ {contactos.Count} contactos guardados correctamente.");
             }
-            //sobre escribo todo el txt ahora
-            File.WriteAllLines(archivoDB, lineas);
-            Console.WriteLine($"✅ {contactos.Count} contactos guardados correctamente.");
+
         }
+        catch (System.Exception)
+        {
+            Console.WriteLine("❌ Error a la hora de guardar los contactos. Intente nuevamente");
+        }
+
     }
 
-    public void CargarContactos(List<Contacto> contactos)
+    public string[] CargarContactos()
     {
-        if (File.Exists(archivoDB))
+        try
         {
             string[] lineas = File.ReadAllLines(archivoDB);
-
-            foreach (var linea in lineas)
-            {
-                if (!string.IsNullOrWhiteSpace(linea))
-                {
-                    string[] datos = linea.Split(";");
-
-                    if (datos.Length >= 4)
-                    {
-                        DateTime fechaGuardada = DateTime.TryParse(datos[3], out DateTime x) ? x : DateTime.Now;
-                        var contacto = new Contacto { Nombre = datos[0], Telefono = datos[1], Email = datos[2], FechaCreacion = fechaGuardada };
-
-                        contactos.Add(contacto);
-                    }
-                }
-            }
-
+            Console.WriteLine("✅ Archivos cargados con exito");
+            return lineas;
         }
-        else
+        catch (System.Exception)
         {
-            System.Console.WriteLine("No se puede acceder al DB.");
+            System.Console.WriteLine("❌No se puede acceder al DB.");
+            return new string[0];
         }
+
     }
 }

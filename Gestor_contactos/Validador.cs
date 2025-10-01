@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using Microsoft.VisualBasic;
+
 public class Validador
 {
     public static string ValidarString(string mensaje)
@@ -36,5 +39,17 @@ public class Validador
     public static bool ValidarIndice(int indice, int max)
     {
         return indice >= 1 && indice <= max;
+    }
+
+    public static string ValidarCambio(string mensaje, string variableOriginal)
+    {
+        Console.WriteLine(mensaje);
+        string variable = Console.ReadLine() ?? "";
+
+        if (!String.IsNullOrWhiteSpace(variable))
+        {
+            return variable; 
+        }
+        return variableOriginal;
     }
 }
