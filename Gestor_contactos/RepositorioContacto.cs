@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata;
+﻿using System.Collections;
+using System.Reflection.Metadata;
 
 namespace Gestor_contactos;
 
@@ -19,7 +20,7 @@ public class RepositorioContacto
                 }
                 //sobre escribo todo el txt ahora
                 File.WriteAllLines(archivoDB, lineas);
-                Console.WriteLine($"✅ {contactos.Count} contactos guardados correctamente.");
+                Console.WriteLine($"✅ {contactos.Count()} contactos guardados correctamente.");
             }
 
         }
@@ -30,19 +31,23 @@ public class RepositorioContacto
 
     }
 
-    public string[] CargarContactos()
+    public ResultadoCarga CargarContactos()
     {
         try
         {
+            if (!File.Exists(archivoDB))
+            {
+                return new ResultadoCarga(false, "❌El archivo no existe", new string[0]);
+            }       
             string[] lineas = File.ReadAllLines(archivoDB);
-            Console.WriteLine("✅ Archivos cargados con exito");
-            return lineas;
+            return new ResultadoCarga(true, "✅ Carga exitosa", lineas);
+
         }
-        catch (System.Exception)
+        catch (Exception ex)
         {
             System.Console.WriteLine("❌No se puede acceder al DB.");
-            return new string[0];
-        }
+            return new ResultadoCarga(false, $"❌ Error. {ex.Message}", new string[0]);
+            }
 
     }
 }

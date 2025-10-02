@@ -9,18 +9,17 @@ public class InterfazConsola
     }
     public void Menu()
     {
-
+        ResultadoOperacion resultado;
         bool continuar = true;
         gestor.CargarContactos();
         while (continuar)
         {
-            Console.Clear();
             Console.WriteLine("=== Gestor de Contactos ===");
             Console.WriteLine("1. Agregar contacto");
             Console.WriteLine("2. Listar contactos");
             Console.WriteLine("3. Modificar Contacto");
             Console.WriteLine("4. Buscar Contacto");
-            Console.WriteLine("5. Elminar Contacto");//pendiente para nuevas opciones
+            Console.WriteLine("5. Elminar Contacto");
             Console.WriteLine("6. Salir");
             Console.Write("Elige una opción: ");
 
@@ -29,19 +28,26 @@ public class InterfazConsola
             switch (opcion)
             {
                 case "1":
-                    gestor.AgregarContacto();
+                    resultado = gestor.AgregarContacto();
+                    Console.WriteLine(resultado.Mensaje);
                     break;
                 case "2":
-                    gestor.ListarContactos();
+                    Console.WriteLine("=== Lista de Contactos ===");
+                    resultado = gestor.ListarContactos();
+                    Console.WriteLine(resultado.Mensaje);
                     break;
                 case "3":
-                    gestor.ModificarContacto();
+                    resultado = gestor.ModificarContacto();
+                    Console.WriteLine(resultado.Mensaje);
                     break;
                 case "4":
-                    gestor.BuscarContacto();
+                    resultado = gestor.BuscarContacto();
+                    Console.WriteLine(resultado.Mensaje);
                     break;
                 case "5":
-                    gestor.EliminarContacto();
+                    Console.WriteLine("Los resultados que coinciden con la busqueda son: ");
+                    resultado = gestor.EliminarContacto();
+                    Console.WriteLine(resultado.Mensaje);
                     break;
                 case "6":
                     continuar = false;
@@ -54,6 +60,7 @@ public class InterfazConsola
             {
                 Console.WriteLine("Presiona ENTER para continuar...");
                 Console.ReadLine();
+                Console.Clear();
             }
         }
     }

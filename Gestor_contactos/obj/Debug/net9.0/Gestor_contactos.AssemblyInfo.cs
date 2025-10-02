@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Gestor_contactos")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+23213a3730eb440790d56bbb4e8632279c4a517d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f1b66586ced0ef85314dee9513ec068313183d13")]
 [assembly: System.Reflection.AssemblyProductAttribute("Gestor_contactos")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Gestor_contactos")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

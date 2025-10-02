@@ -1,5 +1,5 @@
-using System.Diagnostics;
-using Microsoft.VisualBasic;
+using Gestor_contactos;
+
 
 public class Validador
 {
@@ -48,8 +48,32 @@ public class Validador
 
         if (!String.IsNullOrWhiteSpace(variable))
         {
-            return variable; 
+            return variable;
         }
         return variableOriginal;
     }
+
+    public static bool EsNombreUnico(List<Contacto> contactos, string nombre)
+    {
+        return !contactos.Any(c => c.Nombre.Equals(nombre, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public static bool EsEmailUnico(List<Contacto> contactos, string email)
+    {
+        return !contactos.Any(c => c.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public static bool ResponderSiONo(string mensaje)
+    {
+        string respuesta = ValidarString(mensaje);
+        return respuesta == "s";
+    }
+
+    public static bool Opcion1OOpcion2(List<Contacto> resultado, string opcion)
+    {
+        string respuesta = ValidarString($"Desea eliminar 1 contacto o los {resultado.Count()}? \n 1- Eliminar el primer contacto \n 2-Eliminar todos los resultados.");
+        return respuesta == opcion;
+    }
 }
+
+

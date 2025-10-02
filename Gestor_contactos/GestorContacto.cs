@@ -8,141 +8,170 @@ public class GestorContacto
     {
         this.connect = connect;
     }
-    public void AgregarContacto()
+    public ResultadoOperacion AgregarContacto()
     {
-        Console.Write("Nombre: ");
-        string nombre = Console.ReadLine() ?? "";
+        string nombre = Validador.ValidarString("Nombre: ");
+        if (!Validador.EsNombreUnico(contactos, nombre))
+        {
+            return new ResultadoOperacion(false, $"❌ Ya existe un contacto con el nombre {nombre}");
+        }
 
-        Console.Write("Teléfono: ");
-        string telefono = Console.ReadLine() ?? "";
+        string telefono = Validador.ValidarString("Telefono: ");
+        string email = Validador.ValidarString("Email: ");
+        if (!Validador.EsEmailUnico(contactos, email))
+        {
+            return new ResultadoOperacion(false, $"❌ Ya existe un contacto con el email {email}");
+        }
 
-        Console.Write("Email: ");
-        string email = Console.ReadLine() ?? "";
-
-        contactos.Add(new Contacto { Nombre = nombre, Telefono = telefono, Email = email, FechaCreacion = DateTime.Now });
-
+        contactos.Add(new Contacto
+        {
+            Nombre = nombre,
+            Telefono = telefono,
+            Email = email,
+            FechaCreacion = DateTime.Now
+        });
         connect.GuardarContactos(contactos);
-        Console.WriteLine("Contacto agregado.");
+        return new ResultadoOperacion(true, $"✅ El contacto se agrego correctamente.");
     }
 
-    public void ModificarContacto()
+    private void MostrarContacto(Contacto contacto, int indice)
+    {
+        Console.WriteLine($"{indice} -> Nombre: {contacto.Nombre}, Teléfono: {contacto.Telefono}, Email: {contacto.Email}");
+    }
+    private void MostrarContacto(Contacto contacto)
+    {
+        Console.WriteLine($"-> Nombre: {contacto.Nombre}, Teléfono: {contacto.Telefono}, Email: {contacto.Email}");
+    }
+    private void MostrarResultadosXIndice(List<Contacto> contactos)
+    {
+        int indice = 1;
+        foreach (var contacto in contactos)
+        {
+            MostrarContacto(contacto, indice);
+            indice++;
+        }
+    }
+    private void MostrarResultados(List<Contacto> contactos)
+    {
+        foreach (var contacto in contactos)
+        {
+            MostrarContacto(contacto);
+        }
+    }
+
+
+    public ResultadoOperacion ModificarContacto()
     {
         string busqueda = Validador.ValidarString("Ingrese el nombre del contacto a buscar.");
         var resultado = Buscar(busqueda);
 
         if (resultado.Any())
         {
-            System.Console.WriteLine("Los resultados que coinciden con la busqueda son: ");
-            System.Console.WriteLine($"Se han encontrado {resultado.Count()} resultados.");
-            int indice = 1;
-            var contactosPorModificar = new List<Contacto>();
-            foreach (var contacto in resultado)
-            {
-                Console.WriteLine($"{indice} -> Nombre: {contacto.Nombre}, Teléfono: {contacto.Telefono}, Email: {contacto.Email}");
-                indice++;
-                contactosPorModificar.Add(contacto);
-            }
+            int indice;
+            MostrarResultadosXIndice(resultado);
 
             indice = Validador.ValidarInt("Elija el contacto a modificar seleccionando por su indice");
             if (Validador.ValidarIndice(indice, resultado.Count()))
             {
-                var c = contactosPorModificar[indice - 1];
-                Console.WriteLine($"Nombre: {c.Nombre}, Teléfono: {c.Telefono}, Email: {c.Email}");
-                System.Console.WriteLine("Desea modificar el contacto? S/N");
-                string opcion = (Console.ReadLine() ?? "").ToLower();
-
-                if (opcion == "s")
+                var c = resultado[indice - 1];
+                MostrarContacto(c, indice);
+                if (Validador.ResponderSiONo("Desea modificar el contacto S/N"))
                 {
                     c.Nombre = Validador.ValidarCambio("Ingrese un NOMBRE NUEVO. Si no ingresa nada, se conserva el valor anterior.", c.Nombre);
 
                     c.Telefono = Validador.ValidarCambio("Ingrese un TELEFONO NUEVO. Si no ingresa nada, se conserva el valor anterior.", c.Telefono);
                     c.Email = Validador.ValidarCambio("Ingrese un EMAIL NUEVO. Si no ingresa nada, se conserva el valor anterior.", c.Email);
 
-                    System.Console.WriteLine("Datos modificados con exito!");
-                    System.Console.WriteLine("El contacto ha quedado asi: ");
-                    Console.WriteLine($"Nombre: {c.Nombre}, Teléfono: {c.Telefono}, Email: {c.Email}");
                     connect.GuardarContactos(contactos);
-                }
-                else if (opcion == "n")
-                {
-                    System.Console.WriteLine($"Modificacion cancelada");
-                    return;
+                    return new ResultadoOperacion(true, $"Datos modificados con exito! \nLos datos quedaron asi: \n Nombre: {c.Nombre} \nTeléfono: {c.Telefono} \n Email: {c.Email}");
                 }
                 else
                 {
-                    System.Console.WriteLine("❌ Ninguna opcion elegida.");
-                    return;
+                    return new ResultadoOperacion(false, "❌ Ninguna opcion elegida.");
                 }
             }
-            Console.WriteLine("Indice fuera de rango");
-            return;
+            return new ResultadoOperacion(false, "❌ Indice fuera de rango");
         }
         else
         {
-            System.Console.WriteLine("❌ No se encontro ninguna coincidencia.");
-            return;
+            return new ResultadoOperacion(false, "❌ No se encontro ninguna coincidencia.");
         }
     }
-    public void ListarContactos()
+    public ResultadoOperacion ListarContactos()
     {
-        Console.WriteLine("=== Lista de Contactos ===");
-        if (contactos.Count == 0)
+        if (contactos.Count() == 0)
         {
-            Console.WriteLine("No hay contactos.");
+            return new ResultadoOperacion(false, "No hay contactos.");
         }
         else
         {
-            foreach (var contacto in contactos)
-            {
-                Console.WriteLine($"Nombre: {contacto.Nombre}, Teléfono: {contacto.Telefono}, Email: {contacto.Email}, Fecha Creacion: {contacto.FechaCreacion}");
-            }
+            MostrarResultadosXIndice(contactos);
+            return new ResultadoOperacion(true, "✅ Contactos cargados correctamente");
         }
     }
 
 
     public void CargarContactos()
     {
-        string[] lineas = connect.CargarContactos();
-        foreach (var linea in lineas)
+        ResultadoCarga resultadoCarga = connect.CargarContactos();
+        if (resultadoCarga.Exito)
         {
-            if (!string.IsNullOrWhiteSpace(linea))
+            string[] lineas = resultadoCarga.Lineas;
+            Console.WriteLine(resultadoCarga.Mensaje);
+            foreach (var linea in lineas)
             {
-                string[] datos = linea.Split(";");
-
-                if (datos.Length >= 4)
+                if (!string.IsNullOrWhiteSpace(linea))
                 {
-                    DateTime fechaGuardada = DateTime.TryParse(datos[3], out DateTime x) ? x : DateTime.Now;
-                    var contacto = new Contacto { Nombre = datos[0], Telefono = datos[1], Email = datos[2], FechaCreacion = fechaGuardada };
+                    string[] datos = linea.Split(";");
+                    try
+                    {
+                        if (datos.Length >= 4)
+                        {
+                            // DateTime fechaGuardada = DateTime.TryParse(datos[3], out DateTime x) ? x : DateTime.Now;
+                            DateTime fechaGuardada = DateTime.Parse(datos[3]);
+                            var contacto = new Contacto { Nombre = datos[0], Telefono = datos[1], Email = datos[2], FechaCreacion = fechaGuardada };
 
-                    contactos.Add(contacto);
+                            contactos.Add(contacto);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"❌Linea invalida: {linea}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"❌Error. Linea invalida: '{linea}': {ex.Message}");
+                    }
+
                 }
             }
         }
+        else
+        {
+            Console.WriteLine(resultadoCarga.Mensaje);
+        }
     }
 
-    public void BuscarContacto()
+    public ResultadoOperacion BuscarContacto()
     {
-        string busqueda;
-        System.Console.WriteLine("Ingrese el nombre o número del contacto a buscar: ");
-        busqueda = Console.ReadLine() ?? "";
+        string busqueda = Validador.ValidarString("Ingrese el nombre o número del contacto a buscar: ");
         if (string.IsNullOrWhiteSpace(busqueda))
         {
-            System.Console.WriteLine("❌ Debe ingresar un nombre o número validos.");
-            return;
+            return new ResultadoOperacion(false, "❌ Debe ingresar un nombre o número validos.");
         }
         var resultado = Buscar(busqueda);
         if (resultado.Any())
         {
             foreach (var i in resultado)
             {
-                Console.WriteLine($"Nombre: {i.Nombre}, Teléfono: {i.Telefono}, Email: {i.Email}");
+                MostrarContacto(i);
             }
-
         }
         else
         {
-            System.Console.WriteLine("No se encontraron coincidencias.");
+            return new ResultadoOperacion(false, "No se encontraron coincidencias.");
         }
+        return new ResultadoOperacion(true, "✅ Operacion exitosa.");
 
     }
 
@@ -151,62 +180,48 @@ public class GestorContacto
         var resultado = contactos.Where(c => c.Nombre.Contains(valorBuscado, StringComparison.OrdinalIgnoreCase) || c.Telefono.Contains(valorBuscado, StringComparison.OrdinalIgnoreCase)).ToList();
         return resultado;
     }
-
-    public void EliminarContacto()
+    public ResultadoOperacion EliminarContacto()
     {
         string busqueda = Validador.ValidarString("Ingrese el nombre o número del contacto a eliminar");
         var resultado = Buscar(busqueda);
 
         if (resultado.Any())
         {
-            System.Console.WriteLine("Los resultados que coinciden con la busqueda son: ");
             foreach (var i in resultado)
             {
-                Console.WriteLine($"Nombre: {i.Nombre}, Teléfono: {i.Telefono}, Email: {i.Email}");
+                MostrarContacto(i);
             }
 
-            System.Console.WriteLine($"Desea eliminar 1 contacto o los {resultado.Count()}?");
-            System.Console.WriteLine("1 - Eliminar el primer contacto");
-            System.Console.WriteLine("2 - Eliminar todos los resultados");
-            string opcion = Console.ReadLine() ?? "";
-
-            if (opcion == "1")
+            if (Validador.Opcion1OOpcion2(resultado, "1"))
             {
                 var primerContacto = resultado.First();
                 System.Console.WriteLine("El contacto a eliminar es: ");
-                System.Console.WriteLine($"Nombre: {primerContacto.Nombre}, Telefono: {primerContacto.Telefono}, Email: {primerContacto.Email}");
+                MostrarContacto(primerContacto);
 
-                System.Console.WriteLine("Desea eliminarlo? S/N");
-                string confirmacion = (Console.ReadLine() ?? "").ToLower();
-
-                if (confirmacion == "s")
+                if (Validador.ResponderSiONo("Desea eliminarlo? S/N"))
                 {
                     contactos.Remove(primerContacto);
-                    System.Console.WriteLine($"✅ Contacto {primerContacto.Nombre} eliminado!");
                     connect.GuardarContactos(contactos);
                 }
+                return new ResultadoOperacion(true, $"✅ Contacto {primerContacto.Nombre} eliminado!");
             }
-            else if (opcion == "2")
+            else if (Validador.Opcion1OOpcion2(resultado, "2"))
             {
-                System.Console.WriteLine($"Esta seguro de borrar los {resultado.Count()} contactos? S/N");
-                string confirmacion = (Console.ReadLine() ?? "").ToLower();
-                if (confirmacion == "s")
+                if (Validador.ResponderSiONo($"Esta seguro de borrar los {resultado.Count()} contactos? S/N"))
                 {
                     contactos.RemoveAll(c => c.Nombre.Contains(busqueda, StringComparison.OrdinalIgnoreCase) || c.Telefono.Contains(busqueda, StringComparison.OrdinalIgnoreCase));
-                    System.Console.WriteLine($"✅ {resultado.Count()} contactos fueron eliminados.");
                     connect.GuardarContactos(contactos);
                 }
+                return new ResultadoOperacion(true, $"✅ {resultado.Count()} contactos fueron eliminados.");
             }
             else
             {
-                System.Console.WriteLine("❌ Ninguna opcion elegida.");
-                return;
+                return new ResultadoOperacion(false, "❌ Ninguna opcion elegida.");
             }
         }
         else
         {
-            System.Console.WriteLine("❌ No se encontro ninguna coincidencia.");
-            return;
+            return new ResultadoOperacion(false, "❌ No se encontro ninguna coincidencia.");
         }
 
 
